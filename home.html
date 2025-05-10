@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Healthcare & Prediction Website</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #b2fefa, #0ed2f7, #5ee7df, #88d3ce);
+            background-size: 500% 500%;
+            animation: gradientBG 18s ease infinite;
+            color: #222;
+        }
+
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        header {
+            background: linear-gradient(to right, #43cea2, #185a9d, #f7971e);
+            color: #fff;
+            padding: 2rem 0 1rem 0;
+            text-align: center;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.2);
+        }
+
+        nav {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.05rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 5px;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        nav a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        .hero {
+            max-width: 700px;
+            margin: 2.5rem auto;
+            background: #ffffffee;
+            border-radius: 16px;
+            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            animation: fadeInUp 1.2s ease forwards;
+            opacity: 0;
+            transform: translateY(40px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(18, 194, 233, 0.15), transparent 60%);
+            animation: pulse 6s infinite linear;
+            z-index: 0;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.3;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 0.15;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 0.3;
+            }
+        }
+
+        .hero h1 {
+            color: #11998e;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #444;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-btn {
+            padding: 1rem 2.5rem;
+            background: linear-gradient(to right, #11998e, #38ef7d);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .cta-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300%;
+            height: 300%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%) scale(0);
+            border-radius: 50%;
+            transition: transform 0.4s, opacity 0.4s;
+            opacity: 0;
+            z-index: 0;
+        }
+
+        .cta-btn:hover::after {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .services {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 3rem auto;
+            animation: fadeInUp 1.2s ease forwards;
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        .service-card {
+            background: linear-gradient(135deg, #ffffff, #f0fff9);
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.07);
+            padding: 2rem 1.5rem;
+            flex: 1 1 260px;
+            max-width: 300px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-6px) scale(1.04);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(135deg, #d1fff0, #ffffff);
+        }
+
+        .service-card h3 {
+            color: #11998e;
+            margin-bottom: 0.7rem;
+        }
+
+        .service-card p {
+            color: #555;
+            font-size: 1rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem 0;
+            color: #e0f2f1;
+            font-size: 1rem;
+            background: linear-gradient(to right, #00695c, #004d40);
+            animation: fadeIn 1s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .services {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+
+    <script>
+        function handleLogout() {
+            window.location.href = "login.html";
+        }
+    </script>
+</head>
+
+<body>
+    <header>
+        <h1>Healthcare & Prediction</h1>
+        <p>Your partner in wellness and early risk detection</p>
+        <nav>
+            <a href="remainder.html">Health Monitoring</a>
+            <a href="service.html">Services</a>
+            <a href="profile.html">Profile</a>
+            <a href="contact.html">Contact</a>
+            <a href="logout.html">Logout</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>Welcome to Your Health Companion</h1>
+        <p>
+            Empower your health journey with expert information and AI-powered risk prediction tools.<br>
+            Discover your health status, get personalized insights, and take charge of your wellbeing.
+        </p>
+        <a href="predict.html" class="cta-btn">Start Health Prediction</a>
+    </section>
+
+    <section class="services">
+        <div class="service-card">
+            <h3>Health Risk Prediction</h3>
+            <p>Use our advanced AI tools to predict risks for heart disease, diabetes, and more—all from home.</p>
+        </div>
+        <div class="service-card">
+            <h3>Consultation Booking</h3>
+            <p>Book appointments with certified healthcare professionals for personalized medical advice and care.</p>
+        </div>
+        <div class="service-card">
+            <h3>Wellness Resources</h3>
+            <p>Access trusted articles, tips, and guides to help you maintain a healthy lifestyle and prevent illness.
+            </p>
+        </div>
+    </section>
+
+    <footer>
+        &copy; 2025 Healthcare & Prediction Website. All rights reserved.<br>
+        Contact: info@healthprediction.com
+    </footer>
+</body>
+
+</html>

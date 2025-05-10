@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Health Monitoring & Medicine Reminder</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            background: linear-gradient(120deg, #43cea2 0%, #185a9d 100%);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 2.5rem auto;
+            background: #fff;
+            padding: 2rem 1.5rem 2rem 1.5rem;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(33, 147, 176, 0.13), 0 2px 8px rgba(0, 0, 0, 0.09);
+        }
+
+        h2 {
+            color: #185a9d;
+            text-align: center;
+            margin-bottom: 1.2rem;
+        }
+
+        .clock {
+            text-align: center;
+            font-size: 1.3rem;
+            margin-bottom: 1.7rem;
+            color: #43cea2;
+            font-weight: 600;
+            letter-spacing: 2px;
+        }
+
+        .section-title {
+            color: #185a9d;
+            margin-top: 1.5rem;
+            margin-bottom: 0.7rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            margin-bottom: 1.2rem;
+        }
+
+        label {
+            color: #185a9d;
+            font-weight: 500;
+            margin-bottom: 0.2rem;
+        }
+
+        input,
+        select {
+            padding: 0.6rem;
+            border: 1.5px solid #d1eaff;
+            border-radius: 7px;
+            font-size: 1rem;
+            transition: border 0.2s, background 0.2s;
+            background: #f6fdff;
+        }
+
+        input:focus,
+        select:focus {
+            border: 1.5px solid #43cea2;
+            background: #e8f8f5;
+            outline: none;
+        }
+
+        button {
+            background: linear-gradient(90deg, #43cea2 0%, #185a9d 100%);
+            color: #fff;
+            border: none;
+            border-radius: 7px;
+            padding: 0.8rem 0;
+            font-size: 1.08rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s, transform 0.12s;
+            margin-top: 0.5rem;
+            box-shadow: 0 2px 8px rgba(33, 147, 176, 0.09);
+        }
+
+        button:hover {
+            background: linear-gradient(90deg, #185a9d 0%, #43cea2 100%);
+            transform: scale(1.025);
+        }
+
+        .reminder-list,
+        .monitor-list {
+            margin-top: 1.1rem;
+            border-radius: 8px;
+            background: #e0f7fa;
+            padding: 1rem;
+            box-shadow: 0 1px 4px rgba(33, 147, 176, 0.04);
+        }
+
+        .reminder-item,
+        .monitor-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+            border-radius: 6px;
+            margin-bottom: 0.7rem;
+            padding: 0.7rem 0.9rem;
+            box-shadow: 0 1px 3px rgba(33, 147, 176, 0.06);
+            font-size: 1rem;
+        }
+
+        .reminder-item:last-child,
+        .monitor-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .delete-btn {
+            background: #e74c3c;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 0.3rem 0.8rem;
+            font-size: 0.98rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .delete-btn:hover {
+            background: #c0392b;
+        }
+
+        /* Notification Bar */
+        .notification-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #43cea2;
+            color: #fff;
+            padding: 16px 30px 16px 20px;
+            font-size: 1.15rem;
+            box-shadow: 0 2px 8px rgba(33, 147, 176, 0.11);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            animation: slideDown 0.5s;
+        }
+
+        @keyframes slideDown {
+            from {
+                top: -60px;
+            }
+
+            to {
+                top: 0;
+            }
+        }
+
+        .notification-bar .close-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            margin-left: 20px;
+            transition: color 0.2s;
+        }
+
+        .notification-bar .close-btn:hover {
+            color: #185a9d;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1rem 0.2rem;
+            }
+
+            .notification-bar {
+                font-size: 1rem;
+                padding: 12px 10px 12px 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Notification Bar -->
+    <div id="notificationBar" style="display:none;">
+        <span id="notificationMsg"></span>
+        <button class="close-btn" onclick="hideNotificationBar()">&times;</button>
+    </div>
+    <div class="container">
+        <h2>Health Monitoring & Medicine Reminder</h2>
+        <div class="clock" id="clock"></div>
+
+        <!-- Health Monitoring Section -->
+        <div class="section-title">Add Health Reading</div>
+        <form id="monitorForm">
+            <label for="monitorType">Type</label>
+            <select id="monitorType" required>
+                <option value="">-- Select --</option>
+                <option value="Temperature">Temperature (°C)</option>
+                <option value="Blood Pressure">Blood Pressure (mm Hg)</option>
+                <option value="Heart Rate">Heart Rate (bpm)</option>
+                <option value="Blood Sugar">Blood Sugar (mg/dL)</option>
+                <option value="Oxygen Saturation">Oxygen Saturation (%)</option>
+                <option value="Weight">Weight (kg)</option>
+            </select>
+            <label for="monitorValue">Value</label>
+            <input type="number" id="monitorValue" step="any" required>
+            <button type="submit">Add Reading</button>
+        </form>
+        <div class="monitor-list" id="monitorList"></div>
+
+        <!-- Medicine Reminder Section -->
+        <div class="section-title">Add Medicine Reminder</div>
+        <form id="reminderForm">
+            <label for="medicineName">Medicine Name</label>
+            <input type="text" id="medicineName" required>
+            <label for="reminderTime">Reminder Time</label>
+            <input type="time" id="reminderTime" required>
+            <button type="submit">Add Reminder</button>
+        </form>
+        <div class="reminder-list" id="reminderList"></div>
+    </div>
+    <script>
+        // Real-time clock
+        function updateClock() {
+            const now = new Date();
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            const s = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('clock').textContent = `Current Time: ${h}:${m}:${s}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Health Monitoring Logic
+        const monitorForm = document.getElementById('monitorForm');
+        const monitorList = document.getElementById('monitorList');
+        let monitorData = [];
+
+        monitorForm.onsubmit = function (e) {
+            e.preventDefault();
+            const type = document.getElementById('monitorType').value;
+            const value = document.getElementById('monitorValue').value;
+            const time = new Date().toLocaleString();
+            if (type && value) {
+                monitorData.push({ type, value, time });
+                renderMonitorList();
+                monitorForm.reset();
+            }
+        };
+
+        function renderMonitorList() {
+            monitorList.innerHTML = '';
+            monitorData.slice().reverse().forEach((item, idx) => {
+                const div = document.createElement('div');
+                div.className = 'monitor-item';
+                div.innerHTML = `<span><strong>${item.type}:</strong> ${item.value} <br><small>${item.time}</small></span>
+                    <button class="delete-btn" onclick="deleteMonitor(${monitorData.length - 1 - idx})">Delete</button>`;
+                monitorList.appendChild(div);
+            });
+        }
+        window.deleteMonitor = function (idx) {
+            monitorData.splice(idx, 1);
+            renderMonitorList();
+        };
+
+        // Medicine Reminder Logic
+        const reminderForm = document.getElementById('reminderForm');
+        const reminderList = document.getElementById('reminderList');
+        let reminders = [];
+
+        reminderForm.onsubmit = function (e) {
+            e.preventDefault();
+            const name = document.getElementById('medicineName').value.trim();
+            const time = document.getElementById('reminderTime').value;
+            if (name && time) {
+                reminders.push({ name, time });
+                renderReminders();
+                reminderForm.reset();
+            }
+        };
+
+        function renderReminders() {
+            reminderList.innerHTML = '';
+            reminders.forEach((rem, idx) => {
+                const div = document.createElement('div');
+                div.className = 'reminder-item';
+                div.innerHTML = `<span><strong>${rem.name}</strong> at <strong>${rem.time}</strong></span>
+                    <button class="delete-btn" onclick="deleteReminder(${idx})">Delete</button>`;
+                reminderList.appendChild(div);
+            });
+        }
+        window.deleteReminder = function (idx) {
+            reminders.splice(idx, 1);
+            renderReminders();
+        };
+
+        // Notification Bar Logic
+        function showNotificationBar(msg) {
+            const bar = document.getElementById('notificationBar');
+            document.getElementById('notificationMsg').textContent = msg;
+            bar.style.display = 'flex';
+            // Auto-hide after 7 seconds
+            setTimeout(() => {
+                bar.style.display = 'none';
+            }, 7000);
+        }
+        function hideNotificationBar() {
+            document.getElementById('notificationBar').style.display = 'none';
+        }
+
+        // Google Assistant-style Voice Reminder (SpeechSynthesis API)
+        function googleAssistantVoice(text) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 1;
+                utterance.pitch = 1;
+                utterance.volume = 1;
+                // Try to use a Google voice if available
+                const voices = window.speechSynthesis.getVoices();
+                const googleVoice = voices.find(voice => voice.name.toLowerCase().includes('google'));
+                if (googleVoice) utterance.voice = googleVoice;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        // Medicine Reminder Alarm
+        setInterval(() => {
+            const now = new Date();
+            const current = now.toTimeString().slice(0, 5);
+            reminders.forEach(rem => {
+                if (rem.time === current) {
+                    const msg = `It's time to take your medicine: ${rem.name}`;
+                    showNotificationBar(msg);
+                    googleAssistantVoice(msg);
+                }
+            });
+        }, 60000); // check every minute
+
+        // For immediate voice test (optional, remove in production)
+        // googleAssistantVoice("Welcome to your Health Monitoring and Medicine Reminder dashboard.");
+    </script>
+</body>
+
+</html>

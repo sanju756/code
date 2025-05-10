@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>User Profile - Healthcare & Prediction</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        body {
+            background: linear-gradient(135deg, #264653 0%, #e8f8f5 50%, #f4a261 100%);
+            background-color: #2a9d8f;
+            background-size: 200% 200%;
+            animation: gradientMove 8s ease-in-out infinite;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        @keyframes gradientMove {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .profile-container {
+            background: rgba(255, 255, 255, 0.97);
+            max-width: 420px;
+            margin: 3rem auto;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(33, 147, 176, 0.13), 0 2px 8px rgba(0, 0, 0, 0.09);
+            padding: 2.7rem 2rem 2rem 2rem;
+            text-align: center;
+            transition: box-shadow 0.3s, transform 0.3s;
+            position: relative;
+        }
+
+        .profile-container:hover {
+            box-shadow: 0 16px 48px rgba(33, 147, 176, 0.18), 0 2px 8px rgba(0, 0, 0, 0.13);
+            transform: translateY(-5px) scale(1.02);
+        }
+
+        .profile-pic {
+            width: 112px;
+            height: 112px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid transparent;
+            background: linear-gradient(135deg, #43cea2, #185a9d, #6dd5ed, #2193b0);
+            background-size: 200% 200%;
+            animation: gradientMove 8s ease-in-out infinite;
+            padding: 3px;
+            margin-bottom: 1.2rem;
+            box-shadow: 0 2px 12px rgba(33, 147, 176, 0.13);
+            cursor: pointer;
+            position: relative;
+            z-index: 10;
+        }
+
+        h2 {
+            color: #2193b0;
+            margin-bottom: 0.3rem;
+            letter-spacing: 1px;
+        }
+
+        .profile-info {
+            color: #444;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        label {
+            text-align: left;
+            margin-bottom: 0.3rem;
+            color: #2193b0;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            padding: 0.6rem;
+            margin-bottom: 1.2rem;
+            border: 1.5px solid #d1eaff;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border 0.25s, box-shadow 0.25s;
+            background: #f6fdff;
+            box-shadow: 0 1px 4px rgba(33, 147, 176, 0.04);
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            border: 1.5px solid #43cea2;
+            box-shadow: 0 2px 8px rgba(67, 206, 162, 0.11);
+            outline: none;
+            background: #e8f8f5;
+        }
+
+        .save-btn {
+            background: linear-gradient(90deg, #43cea2 0%, #185a9d 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.85rem 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s, transform 0.12s;
+            margin-top: 0.5rem;
+            box-shadow: 0 2px 8px rgba(33, 147, 176, 0.09);
+        }
+
+        .save-btn:hover {
+            background: linear-gradient(90deg, #185a9d 0%, #43cea2 100%);
+            box-shadow: 0 4px 16px rgba(67, 206, 162, 0.13);
+            transform: scale(1.025);
+        }
+
+        .logout-link {
+            display: inline-block;
+            margin-top: 1.5rem;
+            color: #e74c3c;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+            letter-spacing: 0.5px;
+        }
+
+        .logout-link:hover {
+            color: #c0392b;
+            text-decoration: underline;
+        }
+
+        /* Popup menu styles */
+        .popup-menu {
+            position: absolute;
+            top: 130px;
+            /* below profile pic */
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            width: 180px;
+            display: none;
+            flex-direction: column;
+            z-index: 20;
+            user-select: none;
+        }
+
+        .popup-menu.active {
+            display: flex;
+        }
+
+        .popup-menu button {
+            background: none;
+            border: none;
+            padding: 12px 20px;
+            font-size: 1rem;
+            color: #2193b0;
+            cursor: pointer;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.2s;
+        }
+
+        .popup-menu button:last-child {
+            border-bottom: none;
+        }
+
+        .popup-menu button:hover {
+            background-color: #f0f8ff;
+        }
+
+        @media (max-width: 500px) {
+            .profile-container {
+                padding: 1.2rem 0.5rem;
+            }
+
+            .popup-menu {
+                top: 120px;
+                width: 160px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="profile-container">
+        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile Picture" class="profile-pic"
+            id="profilePic" title="Click to open options">
+        <div class="popup-menu" id="profileMenu">
+            <button id="galleryBtn">add frame</button>
+            <button id="animeBtn">view or edit profile photo</button>
+        </div>
+        <h2 id="profileName">John Doe</h2>
+        <div class="profile-info" id="profileEmail">johndoe@email.com</div>
+        <form id="profileForm">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" value="John Doe" required />
+            <label for="email">Email</label>
+            <input type="email" id="email" value="johndoe@email.com" required />
+            <label for="password">Password</label>
+            <input type="password" id="password" value="password123" required />
+            <button type="submit" class="save-btn">Save Changes</button>
+        </form>
+        <a href="login.html" class="logout-link">Logout</a>
+    </div>
+
+    <script>
+        const profilePic = document.getElementById('profilePic');
+        const profileMenu = document.getElementById('profileMenu');
+        const galleryBtn = document.getElementById('galleryBtn');
+        const animeBtn = document.getElementById('animeBtn');
+
+        // Toggle popup menu on profile picture click
+        profilePic.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent event bubbling
+            profileMenu.classList.toggle('active');
+        });
+
+        // Close menu if clicked outside
+        document.addEventListener('click', () => {
+            profileMenu.classList.remove('active');
+        });
+
+        // Prevent closing when clicking inside menu
+        profileMenu.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+        // Example actions for buttons
+        galleryBtn.addEventListener('click', () => {
+            alert('Navigate to Gallery Imags page');
+            // window.location.href = 'gallery.html'; // Uncomment and set your gallery page URL
+            profileMenu.classList.remove('active');
+        });
+
+        animeBtn.addEventListener('click', () => {
+            alert('Navigate to Anime Pictures page');
+            // window.location.href = 'anime.html'; // Uncomment and set your anime pictures page URL
+            profileMenu.classList.remove('active');
+        });
+
+        // Load user info from localStorage if available
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('userName')) {
+                document.getElementById('profileName').textContent = localStorage.getItem('userName');
+                document.getElementById('name').value = localStorage.getItem('userName');
+            }
+            if (localStorage.getItem('userEmail')) {
+                document.getElementById('profileEmail').textContent = localStorage.getItem('userEmail');
+                document.getElementById('email').value = localStorage.getItem('userEmail');
+            }
+            if (localStorage.getItem('userPassword')) {
+                document.getElementById('password').value = localStorage.getItem('userPassword');
+            }
+        });
+
+        // Save changes to localStorage (for demo)
+        document.getElementById('profileForm').onsubmit = function (e) {
+            e.preventDefault();
+            localStorage.setItem('userName', document.getElementById('name').value);
+            localStorage.setItem('userEmail', document.getElementById('email').value);
+            localStorage.setItem('userPassword', document.getElementById('password').value);
+            document.getElementById('profileName').textContent = document.getElementById('name').value;
+            document.getElementById('profileEmail').textContent = document.getElementById('email').value;
+            alert("Profile updated!");
+        };
+    </script>
+</body>
+
+</html>

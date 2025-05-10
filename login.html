@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Signup & Login Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Google Font: Poppins -->
+    <style>
+        :root {
+            --color-primary: #3498db;
+            --color-secondary: #2ecc71;
+            --color-accent: #e67e22;
+            --color-muted: #7f8c8d;
+            --color-error: #e74c3c;
+        }
+
+        body {
+            background: linear-gradient(135deg, #3498db 0%, #2ecc71 100%);
+            font-family: 'Poppins', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--color-muted);
+            margin: 0;
+        }
+
+        .container {
+            background: #fff;
+            padding: 2rem 2.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.09);
+            width: 350px;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 1.5rem;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 0.7rem;
+            text-align: center;
+            cursor: pointer;
+            background: #eee;
+            border-radius: 5px 5px 0 0;
+            font-weight: 600;
+            color: var(--color-muted);
+            transition: background 0.2s, color 0.2s;
+            user-select: none;
+        }
+
+        .tab.active {
+            background: var(--color-primary);
+            color: #fff;
+            box-shadow: inset 0 -3px 0 0 #2980b9;
+        }
+
+        form {
+            display: none;
+            flex-direction: column;
+        }
+
+        form.active {
+            display: flex;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            padding: 0.7rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-family: 'Poppins', Arial, sans-serif;
+            color: var(--color-muted);
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            border-color: var(--color-primary);
+            outline: none;
+        }
+
+        button {
+            padding: 0.7rem;
+            background: var(--color-primary);
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+            font-family: 'Poppins', Arial, sans-serif;
+        }
+
+        button:hover {
+            background: #217dbb;
+        }
+
+        .switch-link {
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 0.95rem;
+            color: var(--color-muted);
+        }
+
+        .switch-link a {
+            color: var(--color-accent);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .switch-link a:hover {
+            color: var(--color-secondary);
+            text-decoration: underline;
+        }
+
+        h1 {
+            color: var(--color-primary);
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .error-msg {
+            color: var(--color-error);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .success-msg {
+            color: var(--color-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Welcome</h1>
+        <div class="tabs">
+            <div class="tab active" id="loginTab">Login</div>
+            <div class="tab" id="signupTab">Sign Up</div>
+        </div>
+        <!-- Login Form -->
+        <form id="loginForm" class="active" novalidate>
+            <div class="error-msg" id="loginError"></div>
+            <input type="email" id="loginEmail" placeholder="Email" required />
+            <input type="password" id="loginPassword" placeholder="Password" required />
+            <button type="submit">Login</button>
+            <div class="switch-link">
+                Don't have an account? <a id="toSignup">Sign Up</a>
+            </div>
+        </form>
+        <!-- Signup Form -->
+        <form id="signupForm" novalidate>
+            <div class="error-msg" id="signupError"></div>
+            <div class="success-msg" id="signupSuccess"></div>
+            <input type="text" id="signupName" placeholder="Full Name" required />
+            <input type="email" id="signupEmail" placeholder="Email" required />
+            <input type="password" id="signupPassword" placeholder="Password" required />
+            <button type="submit">Sign Up</button>
+            <div class="switch-link">
+                Already have an account? <a id="toLogin">Login</a>
+            </div>
+        </form>
+    </div>
+    <script>
+        // Tab switching logic
+        const loginTab = document.getElementById('loginTab');
+        const signupTab = document.getElementById('signupTab');
+        const loginForm = document.getElementById('loginForm');
+        const signupForm = document.getElementById('signupForm');
+        const toSignup = document.getElementById('toSignup');
+        const toLogin = document.getElementById('toLogin');
+
+        loginTab.onclick = () => {
+            loginTab.classList.add('active');
+            signupTab.classList.remove('active');
+            loginForm.classList.add('active');
+            signupForm.classList.remove('active');
+        };
+        signupTab.onclick = () => {
+            signupTab.classList.add('active');
+            loginTab.classList.remove('active');
+            signupForm.classList.add('active');
+            loginForm.classList.remove('active');
+        };
+        toSignup.onclick = () => signupTab.onclick();
+        toLogin.onclick = () => loginTab.onclick();
+
+        // Demo "database" for storing one user in localStorage
+        function saveUser(email, password, name) {
+            localStorage.setItem('userEmail', email);
+            localStorage.setItem('userPassword', password);
+            localStorage.setItem('userName', name);
+        }
+        function getUser() {
+            return {
+                email: localStorage.getItem('userEmail'),
+                password: localStorage.getItem('userPassword'),
+                name: localStorage.getItem('userName')
+            };
+        }
+
+        // Signup validation and handler
+        signupForm.onsubmit = function (e) {
+            e.preventDefault();
+            const name = document.getElementById('signupName').value.trim();
+            const email = document.getElementById('signupEmail').value.trim();
+            const password = document.getElementById('signupPassword').value;
+
+            const errorDiv = document.getElementById('signupError');
+            const successDiv = document.getElementById('signupSuccess');
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+
+            // Basic validation
+            if (!name || !email || !password) {
+                errorDiv.textContent = "All fields are required.";
+                errorDiv.style.display = 'block';
+                return;
+            }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                errorDiv.textContent = "Please enter a valid email address.";
+                errorDiv.style.display = 'block';
+                return;
+            }
+            if (password.length < 6) {
+                errorDiv.textContent = "Password must be at least 6 characters.";
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            // Save user to localStorage (for demo only)
+            saveUser(email, password, name);
+
+            successDiv.textContent = "Signup successful! Please login.";
+            successDiv.style.display = 'block';
+
+            // Switch to login after short delay
+            setTimeout(() => {
+                loginTab.onclick();
+                // Optionally, pre-fill login email
+                document.getElementById('loginEmail').value = email;
+                document.getElementById('loginPassword').value = '';
+                successDiv.style.display = 'none';
+            }, 1200);
+        };
+
+        // Login validation and handler
+        loginForm.onsubmit = function (e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const errorDiv = document.getElementById('loginError');
+            errorDiv.style.display = 'none';
+
+            // Fetch user from localStorage
+            const user = getUser();
+
+            if (!email || !password) {
+                errorDiv.textContent = "All fields are required.";
+                errorDiv.style.display = 'block';
+                return;
+            }
+            if (!user.email || !user.password) {
+                errorDiv.textContent = "No account found. Please sign up first.";
+                errorDiv.style.display = 'block';
+                return;
+            }
+            if (email !== user.email || password !== user.password) {
+                errorDiv.textContent = "Invalid email or password.";
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            // Redirect to home.html (your home page)
+            window.location.href = "home.html";
+        };
+    </script>
+</body>
+
+</html>
